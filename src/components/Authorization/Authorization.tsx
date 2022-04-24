@@ -1,6 +1,7 @@
 import { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { StateContext } from "../App/App";
+import { CenteredProgressBar } from "../common/styles";
 
 function Authorization() {
   const location = useLocation();
@@ -24,29 +25,32 @@ function Authorization() {
           Accept: "*/*",
           "Content-Type": "application/json",
         },
-      }).then((res) =>
-        res.json().then((body) => {
-          console.log("code response:", body?.data);
-          state.token = body?.data?.token;
+      })
+        .then(async (res) =>
+          res.json().then(async (body) => {
+            state.token = body?.data?.token;
+
+            if (state.token) {
+              await fetch("https://oauth.reddit.com/api/v1/me", {
+                method: "GET",
+                mode: "cors",
+                headers: {
+                  Authorization: `bearer ${state.token}`,
+                },
+              }).then(
+                async (res) =>
+                  await res.json().then((body) => (state.username = body?.name))
+              );
+            }
+          })
+        )
+        .then(() => {
           navigate("/", { replace: true });
-        })
-      );
+        });
     }
   }, []);
 
-  //   useEffect(() => {
-  //     if (token) {
-  //       fetch("https://oauth.reddit.com/api/v1/me", {
-  //         method: "GET",
-  //         mode: "cors",
-  //         headers: {
-  //           Authorization: `bearer ${token}`,
-  //         },
-  //       }).then((res) => res.json().then((body) => console.log(body)));
-  //     }
-  //   }, [token]);
-
-  return <></>;
+  return <CenteredProgressBar />;
 }
 
 export default Authorization;
