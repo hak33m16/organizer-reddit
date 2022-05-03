@@ -5,24 +5,16 @@ import {
   ThemeProvider,
   useMediaQuery,
 } from "@mui/material";
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useReducer } from "react";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Authorization from "../Authorization";
 import Home from "../Home";
 import Organizer from "../Organizer";
-
-interface State {
-  token?: string;
-  username?: string;
-  theme?: PaletteMode;
-}
-
-export const StateContext = React.createContext({} as State);
-const StateProvider = StateContext.Provider;
+import { StateProvider } from "../StateProvider/StateProvider";
 
 function App() {
   return (
-    <StateProvider value={{}}>
+    <StateProvider>
       <ThemeProvider
         theme={createTheme({
           palette: {

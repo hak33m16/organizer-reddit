@@ -1,13 +1,13 @@
 import { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
-import { StateContext } from "../App/App";
 import { CenteredProgressBar } from "../common/styles";
+import { StateContext } from "../StateProvider/StateProvider";
 
 function Authorization() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const state = useContext(StateContext);
+  const context = useContext(StateContext);
 
   useEffect(() => {
     const queryParams = new URLSearchParams(location.search);
@@ -28,18 +28,23 @@ function Authorization() {
       })
         .then(async (res) =>
           res.json().then(async (body) => {
-            state.token = body?.data?.token;
+            const token = body?.data?.token;
+            context.dispatch({ key: "token", value: token });
 
-            if (state.token) {
+            if (token) {
               await fetch("https://oauth.reddit.com/api/v1/me", {
                 method: "GET",
                 mode: "cors",
                 headers: {
-                  Authorization: `bearer ${state.token}`,
+                  Authorization: `bearer ${token}`,
                 },
               }).then(
                 async (res) =>
-                  await res.json().then((body) => (state.username = body?.name))
+                  await res
+                    .json()
+                    .then((body) =>
+                      context.dispatch({ key: "username", value: body?.name })
+                    )
               );
             }
           })

@@ -1,25 +1,27 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { StateContext } from "../App/App";
 import Post from "../Post/Post";
+import { StateContext } from "../StateProvider/StateProvider";
 
 function Organizer() {
-  const state = useContext(StateContext);
+  const context = useContext(StateContext);
   const navigate = useNavigate();
 
   const [savedPostData, setSavedPostData] = useState([] as any[]);
 
   useEffect(() => {
-    if (state.token && state.username) {
-      fetch(`https://oauth.reddit.com/user/${state.username}/saved?limit=5`, {
-        method: "GET",
-        mode: "cors",
-        headers: {
-          Authorization: `bearer ${state.token}`,
-        },
-      }).then((res) =>
+    if (context.state.token && context.state.username) {
+      fetch(
+        `https://oauth.reddit.com/user/${context.state.username}/saved?limit=5`,
+        {
+          method: "GET",
+          mode: "cors",
+          headers: {
+            Authorization: `bearer ${context.state.token}`,
+          },
+        }
+      ).then((res) =>
         res.json().then((body) => {
-          console.log(body?.data?.children);
           setSavedPostData([...savedPostData, ...body?.data?.children]);
         })
       );
@@ -27,10 +29,6 @@ function Organizer() {
       navigate("/");
     }
   }, []);
-
-  useEffect(() => {
-    console.log("saved post data set to: %o", savedPostData);
-  }, [savedPostData]);
 
   return (
     <>

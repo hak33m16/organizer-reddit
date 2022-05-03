@@ -2,16 +2,16 @@ import { Button } from "@mui/material";
 import { useContext, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import * as uuid from "uuid";
-import { StateContext } from "../App/App";
 import { RowDiv } from "../common/styles";
+import { StateContext } from "../StateProvider/StateProvider";
 import { HomeDiv } from "./styles";
 
 function Home() {
-  const state = useContext(StateContext);
+  const context = useContext(StateContext);
   const navigate = useNavigate();
 
   const id = uuid.v4();
-  const clientId = "y5_3-2xqzdvK9GuvX8P7Ng";
+  const clientId = "o5zEOr40IKtc0Q2lbNMWzg";
   const redirectUrl = "http://localhost:3000/authorization";
   const duration = "permanent";
   const scope = "vote history identity read save";
@@ -25,7 +25,7 @@ duration=${duration}&\
 scope=${scope}`;
 
   useEffect(() => {
-    if (state.token) {
+    if (context.state.token) {
       navigate("/organizer");
     }
   }, []);
