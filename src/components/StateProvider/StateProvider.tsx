@@ -1,10 +1,16 @@
 import { PaletteMode } from "@mui/material";
 import React, { useEffect, useReducer } from "react";
 
+export interface UserVisibleError {
+  title: string;
+  messages: string[];
+}
+
 export interface State {
   token?: string;
   username?: string;
   theme?: PaletteMode;
+  error?: UserVisibleError;
 }
 
 export interface StateContext {

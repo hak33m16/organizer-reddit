@@ -1,7 +1,7 @@
 import { useContext, useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
 import { CenteredProgressBar } from "../common/styles";
-import { StateContext } from "../StateProvider/StateProvider";
+import { UserVisibleError, StateContext } from "../StateProvider/StateProvider";
 
 function Authorization() {
   const location = useLocation();
@@ -38,14 +38,28 @@ function Authorization() {
                 headers: {
                   Authorization: `bearer ${token}`,
                 },
-              }).then(
-                async (res) =>
-                  await res
-                    .json()
-                    .then((body) =>
-                      context.dispatch({ key: "username", value: body?.name })
-                    )
-              );
+              })
+                .then(
+                  async (res) =>
+                    await res
+                      .json()
+                      .then((body) =>
+                        context.dispatch({ key: "username", value: body?.name })
+                      )
+                )
+                .catch((err) => {
+                  context.dispatch({
+                    key: "error",
+                    value: {
+                      title: "Error communicating with Reddit",
+                      messages: [
+                        "Failed to retrieve user information, please try again.",
+                        'If you\'re using Firefox, make sure "Enhanced Tracking Protection" is disabled.',
+                      ],
+                    } as UserVisibleError,
+                  });
+                  navigate("/", { replace: true });
+                });
             }
           })
         )

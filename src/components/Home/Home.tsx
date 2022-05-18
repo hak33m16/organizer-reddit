@@ -1,5 +1,5 @@
-import { Button } from "@mui/material";
-import { useContext, useEffect } from "react";
+import { Alert, AlertTitle, Button, Collapse } from "@mui/material";
+import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as uuid from "uuid";
 import { RowDiv } from "../common/styles";
@@ -9,6 +9,8 @@ import { HomeDiv } from "./styles";
 function Home() {
   const context = useContext(StateContext);
   const navigate = useNavigate();
+
+  const [errorOpen, setErrorOpen] = useState(true);
 
   const id = uuid.v4();
   const clientId = "o5zEOr40IKtc0Q2lbNMWzg";
@@ -30,10 +32,31 @@ scope=${scope}`;
     }
   }, []);
 
+  const onLoginAttempt = () => {
+    context.dispatch({ key: "error", value: undefined });
+  };
+
   return (
     <HomeDiv id="home">
       <RowDiv>
-        <Button variant={"contained"} href={url}>
+        {context.state.error ? (
+          <Collapse in={errorOpen}>
+            <Alert severity="error" onClose={() => setErrorOpen(false)}>
+              <AlertTitle>{context.state.error.title}</AlertTitle>
+              {context.state.error.messages.map((message) => (
+                <React.Fragment key={message}>
+                  <span>{message}</span>
+                  <br />
+                </React.Fragment>
+              ))}
+            </Alert>
+          </Collapse>
+        ) : (
+          <></>
+        )}
+      </RowDiv>
+      <RowDiv>
+        <Button variant={"contained"} href={url} onClick={onLoginAttempt}>
           Login with Reddit
         </Button>
       </RowDiv>

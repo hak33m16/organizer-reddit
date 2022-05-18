@@ -26,6 +26,8 @@ function Organizer() {
         })
       );
     } else {
+      context.dispatch({ key: "token", value: undefined });
+      context.dispatch({ key: "username", value: undefined });
       navigate("/");
     }
   }, []);
