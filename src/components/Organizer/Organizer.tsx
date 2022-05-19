@@ -1,5 +1,6 @@
 import { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Navbar from "../Navbar";
 import Post from "../Post/Post";
 import { StateContext } from "../StateProvider/StateProvider";
 
@@ -34,6 +35,7 @@ function Organizer() {
 
   return (
     <>
+      <Navbar />
       <span>test1</span>
       {savedPostData.map((postData) => (
         <Post
