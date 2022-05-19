@@ -1,10 +1,10 @@
-import { Alert, AlertTitle, Button, Collapse } from "@mui/material";
+import { Alert, AlertTitle, Button, Collapse, Stack } from "@mui/material";
 import React, { useContext, useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import * as uuid from "uuid";
 import { RowDiv } from "../common/styles";
 import { StateContext } from "../StateProvider/StateProvider";
-import { HomeDiv } from "./styles";
+import { HomeDiv, StyledButton, StyledCollapse } from "./styles";
 
 function Home() {
   const context = useContext(StateContext);
@@ -37,30 +37,34 @@ scope=${scope}`;
   };
 
   return (
-    <HomeDiv id="home">
-      <RowDiv>
-        {context.state.error ? (
-          <Collapse in={errorOpen}>
-            <Alert severity="error" onClose={() => setErrorOpen(false)}>
-              <AlertTitle>{context.state.error.title}</AlertTitle>
-              {context.state.error.messages.map((message) => (
-                <React.Fragment key={message}>
-                  <span>{message}</span>
-                  <br />
-                </React.Fragment>
-              ))}
-            </Alert>
-          </Collapse>
-        ) : (
-          <></>
-        )}
-      </RowDiv>
-      <RowDiv>
-        <Button variant={"contained"} href={url} onClick={onLoginAttempt}>
-          Login with Reddit
-        </Button>
-      </RowDiv>
-    </HomeDiv>
+    <>
+      {context.state.error ? (
+        <StyledCollapse in={errorOpen}>
+          <Alert severity="error" onClose={() => setErrorOpen(false)}>
+            <AlertTitle>{context.state.error.title}</AlertTitle>
+            {context.state.error.messages.map((message) => (
+              <React.Fragment key={message}>
+                <span>{message}</span>
+                <br />
+              </React.Fragment>
+            ))}
+          </Alert>
+        </StyledCollapse>
+      ) : (
+        <></>
+      )}
+      <HomeDiv id="home">
+        <Stack>
+          <StyledButton
+            variant={"contained"}
+            href={url}
+            onClick={onLoginAttempt}
+          >
+            Login with Reddit
+          </StyledButton>
+        </Stack>
+      </HomeDiv>
+    </>
   );
 }
 

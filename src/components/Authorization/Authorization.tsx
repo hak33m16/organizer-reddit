@@ -65,6 +65,18 @@ function Authorization() {
         )
         .then(() => {
           navigate("/", { replace: true });
+        })
+        .catch((err) => {
+          context.dispatch({
+            key: "error",
+            value: {
+              title: "Error communicating with Organizer for Reddit",
+              messages: [
+                "Failed to authenticate using our API, please try again.",
+              ],
+            } as UserVisibleError,
+          });
+          navigate("/", { replace: true });
         });
     }
   }, []);
